@@ -2,21 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Web Unblocker</title>
-  <link rel="stylesheet" href="style.css">
+  <title>My Web Unblocker</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #fff;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>?? Web Unblocker</h1>
-    <div id="form">
-      <input id="urlInput" type="text" placeholder="Enter URL (https://example.com)">
-      <button id="goBtn">Go</button>
-    </div>
-  </header>
+  <input id="urlInput" type="text" placeholder="Enter website, e.g. tfp.is" />
+  <iframe id="viewer" src=""></iframe>
 
-  <iframe id="frame" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+  <script>
+    const input = document.getElementById('urlInput');
+    const viewer = document.getElementById('viewer');
 
-  <script src="script.js"></script>
+    function getPath() {
+      return window.location.pathname.replace('/myunblocker/', '');
+    }
+
+    async function loadSite(target) {
+      if (!target) return;
+      if (!target.startsWith('http')) target = 'https://' + target;
+      const proxy = 'https://denvorsmith289myunblocker.denvorsmith289.workers.dev/?url=' + encodeURIComponent(target);
+      viewer.src = proxy;
+      input.value = target;
+      history.replaceState(null, '', '/myunblocker/' + target.replace(/^https?:\/\//, ''));
+    }
+
+    // Handle when user presses Enter
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        loadSite(input.value.trim());
+      }
+    });
+
+    // Auto-load if a path (like /myunblocker/tfp.is)
+    const pathSite = getPath();
+    if (pathSite) {
+      loadSite(pathSite);
+    }
+  </script>
 </body>
 </html>
