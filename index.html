@@ -6,19 +6,28 @@
   <style>
     body {
       margin: 0;
-      background: #000;
+      background: #0a0a0a;
       color: #0f0;
       font-family: monospace;
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
+    header {
+      background: #111;
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+    }
     input {
-      width: 100%;
-      padding: 10px;
+      width: 90%;
+      max-width: 600px;
+      padding: 8px;
       border: none;
       outline: none;
       font-size: 16px;
+      color: #0f0;
+      background: #000;
     }
     iframe {
       flex: 1;
@@ -29,38 +38,40 @@
   </style>
 </head>
 <body>
-  <input id="urlInput" type="text" placeholder="Enter website, e.g. tfp.is" />
+  <header>
+    <form id="form">
+      <input id="urlInput" placeholder="Enter site, e.g. example.com" />
+    </form>
+  </header>
   <iframe id="viewer" src=""></iframe>
 
   <script>
     const input = document.getElementById('urlInput');
     const viewer = document.getElementById('viewer');
+    const workerURL = 'https://denvorsmith289myunblocker.denvorsmith289.workers.dev/?url=';
 
-    function getPath() {
-      return window.location.pathname.replace('/myunblocker/', '');
+    function getTargetFromPath() {
+      const parts = window.location.pathname.split('/myunblocker/')[1];
+      return parts ? decodeURIComponent(parts) : '';
     }
 
-    async function loadSite(target) {
+    function loadSite(target) {
       if (!target) return;
       if (!target.startsWith('http')) target = 'https://' + target;
-      const proxy = 'https://denvorsmith289myunblocker.denvorsmith289.workers.dev/?url=' + encodeURIComponent(target);
-      viewer.src = proxy;
+      const proxied = workerURL + encodeURIComponent(target);
+      viewer.src = proxied;
       input.value = target;
       history.replaceState(null, '', '/myunblocker/' + target.replace(/^https?:\/\//, ''));
     }
 
-    // Handle when user presses Enter
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        loadSite(input.value.trim());
-      }
+    document.getElementById('form').addEventListener('submit', e => {
+      e.preventDefault();
+      loadSite(input.value.trim());
     });
 
-    // Auto-load if a path (like /myunblocker/tfp.is)
-    const pathSite = getPath();
-    if (pathSite) {
-      loadSite(pathSite);
-    }
+    // Auto-load if path already includes a site
+    const path = getTargetFromPath();
+    if (path) loadSite(path);
   </script>
 </body>
 </html>
