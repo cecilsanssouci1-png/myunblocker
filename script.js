@@ -1,4 +1,4 @@
-const WORKER_URL = "https://denvorsmith289myunblocker.denvorsmith289.workers.dev"; // Cloudflare Worker URL
+const WORKER_URL = "https://unblocker2j.denvorsmith289.workers.dev"; // Cloudflare Worker URL
 const TOKEN = "cecilsanssouci1"; // same as in Worker
 
 const input = document.getElementById("urlInput")
